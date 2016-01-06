@@ -110,6 +110,16 @@ body {
   text-decoration: none;
 }
 
+#content ul {
+  margin: 0px
+}
+#content li {
+  margin: 0px -25px 0px;
+  padding: 0px;
+  list-style-type: none;
+  list-style-image: none;
+}
+
 	
 #sidebar {
 	width:150px;
