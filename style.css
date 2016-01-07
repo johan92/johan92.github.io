@@ -86,7 +86,7 @@ body {
 #page {
         margin: 0 auto;
 	padding: 0;
-	width: 750px;
+	width: 650px;
 }
 
 
@@ -97,8 +97,8 @@ body {
 #content {
 	margin:0;
 	padding:0 0 0 0;
-	width:750px;
-	float:right;
+	width:650px;
+	/*float:right;*/
 }
 
 #content a {
@@ -158,7 +158,7 @@ body {
 }
 
 #hmenu {
-        float: left;
+        /*float: left;*/
 	margin: 0 5px 0 0;
 	padding: 0 0 0 0;
         font-family: "Open Sans", 'Lucida Grande', Arial, sans-serif;
