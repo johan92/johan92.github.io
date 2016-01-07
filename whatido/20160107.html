@@ -121,19 +121,98 @@
 Здесь у нас более серьёзная периферия, чем просто светодиодики. Мы захотели, чтобы
 вся периферия была "видна" в линуксе: можно было бы на процессоре запустить какое-то гуёвое приложение и выводилась бы картинка на экран.
 
+В принципе, многие вещи у нас заработали из коробки, но повозиться пришлось. 
+<br><br>
+Кратко и без подробных технических деталей:
+
+<h4>VGA</h4>
+У нас сделано RGB565, а АЦП на резисторах. Т.е. с FPGA уходят сигналы цвета и еще синхронизация (v_sync, h_sync). <br><br>
+
+Сделано всё через стандартный линуксовый фреймбуфер.
+Были взяты модули <b>Frame Reader</b> и <b>Clocked Output</b> из <a href="https://www.altera.com/en_US/pdfs/literature/ug/ug_vip.pdf">Altera VIP</a>, а драйвер из исходников
+ядра, которое "поддерживает" Альтера (<a href="https://github.com/altera-opensource/linux-socfpga/blob/socfpga-3.18/drivers/video/altvipfb.c">altvipfb.c</a>)
+<br><br>
+Получилось как-то так:
+<br><br>
+
 <img src="https://habrastorage.org/files/c43/3c4/e54/c433c4e5485d4e80b0baf651c247645d.jpg" width=500 height=375/>
 <br>
 <i>Выводим котика через утилиту "fbi".</i>
-<br>
+<br><br>
+
 <img src="https://habrastorage.org/files/684/bb8/eb6/684bb8eb61ef43a5b382ae9ccefa4b37.jpg" width=500 height=375/>
 <br>
 <i>Запуск иксов (icewm).</i>
+
+<h4>Audio</h4>
+Там используется стандартный чип-кодек <a href="http://www.farnell.com/datasheets/1808088.pdf">SSM2603</a>: один интерфейс
+для управления (I2C), второй для получения/отправки аудиоданных (I2S). Эти сигналы тоже заходят на FPGA.
 <br><br>
 
-В принципе, многие вещи у нас заработали из коробки, но повозиться пришлось.
-В технические подробности углубляться здесь я не очень хочу - как мы это сделали будет ясно из исходников.
+I2C модуль, который настраивает этот кодек на дефолтные настройки мы нашли где-то в интернете и пока захадркодили, а
+вот с I2S пришлось немного повозиться: у Альтеры есть <a href="ftp://ftp.altera.com/up/pub/University_Program_IP_Cores/Audio.pdf">IP-ядро</a>, 
+которое идеально подходит по то, что нам надо, но оно распроняется по Altera University Program, и типа только для DE1/DE2 борд, а у нас плата-то своя.
+<br><br>
+Мы конечно, написали запрос в Альтеру, но нам не ответили до сих пор. Пока писали письмо, решили что лучше самим написать I2S контроллер на FPGA,
+что мы и сделали (относительно просто получилось). 
+<br><br>
+В итоге получилось с процессора писать отсчеты, и у нас получилось вывести звук, но пока поддержки со стороны "драйвера" нет - мы писали
+из юзерспейсного приложения. 
 
+<h4>ADC (АЦП)</h4>
+Там стоит очень простой 1Msps 12-битный чип (<a href="http://www.ti.com/lit/ds/symlink/adc128s102.pdf">ADC128S102</a>), данные читаются по SPI, поэтому
+было решено использовать готовое ядро от Альтеры <a href="https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/ug/ug_embedded_ip.pdf">SPI Core</a>.
+В качестве SPI-драйвера использовался альтеровский <a href="https://github.com/altera-opensource/linux-socfpga/blob/socfpga-3.18/drivers/spi/spi-altera.c">spi-altera.c</a>.
+А в качестве самого АЦП - <a href="https://github.com/altera-opensource/linux-socfpga/blob/socfpga-3.18/drivers/iio/adc/ti-adc128s052.c">ADC128S052</a>. В принципе чипы почти одинаковые)
+
+<br><br>
+В итоге появились файлики, из которых читаются "сырые" значения для ADC: <br>
+<code>
+root@device:~# ls -l /sys/bus/iio/devices/iio\:device0/in_voltage*                          <br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage0_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage1_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage2_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage3_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage4_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage5_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage6_raw<br>
+-rw-r--r-- 1 root root 4096 Nov 30 09:34 /sys/bus/iio/devices/iio:device0/in_voltage7_raw<br>
+</code>
+
+<h4>DAC (ЦАП)</h4>
+Здесь используется 16-битый ЦАП <a href="http://www.ti.com/lit/ds/slas449d/slas449d.pdf">DAC8831</a>. <br>
+Он тоже SPI-ный и подключен к FPGA. Поэтому тоже использовали SPI ядро и драйвер от Альтеры. <br><br>
+
+К качестве "высокоуровнего" драйвера было решено взять для <a href="https://github.com/altera-opensource/linux-socfpga/blob/socfpga-3.18/drivers/misc/ti_dac7512.c">DAC7512</a>, 
+потому что он тоже был для 16-битного SPI ЦАПа и был самый простой, что мы заметили. 
+<br><br>
+
+Появился файл:<br>
+<code>
+/sys/devices/soc/c0000000.bridge/c0000020.spi/spi_master/spi32765/spi32765.0/value <br>
+</code>
+<br>
+Куда можно записать значение в десятичной форме через echo: <br>
+<code>
+echo "123" > value <br>
+</code>
+
+<br>
+Более подробно можно будет всё понять из исходников.
 Правда, их я пока не могу выложить, т.к. они не готовы. Как только они появятся на гитхабе, то сделаю здесь ссылку.
+
+<h3>Стоит ли игра свеч?</h3>
+Вполне очевидный вопрос задается о целесообразности того, что мы делаем, потому что Терасик предлагает очень вкусные цены на свои киты,
+а зная ту цену, которую мы будем сообщать на SoM'ы и синюю коробочку, то может сложиться впечатление, что интереса не будет. <br><br>
+
+Есть мнение, что у Терасика относительно дешешевые цены, т.к. вендоры (Альтера, TI и пр.) могут отдавать Терасику чипы ниже себестоимости 
+(и это вполне нормально, т.к. это взаимовыгодно). Таких цен нам Альтера не дает :). <br><br>
+
+Стоит ли переплачивать за "относительно" похожие киты в N раз? <br>
+Я вижу следующие факторы: импортозамещение (платы разработаны в России, руками людей, которые сидят через стену от меня), 
+реальная техподдержка на русском языке (от меня и моих коллег) и кастомизация под возможные решения заказчика.
+
+Заинтересует ли это кого-то? Посмотрим :)
       </div> <!-- content -->
   </div> <!-- page -->
 
