@@ -1,0 +1,137 @@
+<html>
+
+  <head>
+    <title> Ivan Shevchuk </title>
+    <meta charset ="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css"> 
+  </head>
+
+  <body>
+    <div id = "page">
+      <div id = "header">
+        <h1>
+          Ivan Shevchuk
+        </h1>
+      </div>
+
+      <div id = "hmenu">
+        <ul>
+          <li> <a href="index.html">Контакты (обо мне)</a></li>
+          <li> <a href="projects.html">Проекты</a></li>
+          <li> <a href="articles.html">Статьи/заметки</a></li>
+          <li> <a href="public.html">Выступления/конференции</a></li>
+          <li> <a href="en_index.html">English</a></li>
+        </ul>
+      </div>
+      
+      <div id = "content"> 
+        <h2>Проекты</h2>       
+
+        Коммерческие FPGA-проекты в которых я участвовал:
+
+        <h3>2015</h3>
+        
+        <a href="http://metrotek.spb.ru/b3et.html">Беркут-ET (rev. 4.0)</a> (Cyclone V SoC):
+        <ul>
+          <li>портирование кода;</li>
+          <li>оптимизация по ресурсам многопоточного генератора трафика и теста BERT.</li>
+        </ul>
+        
+        <br>
+
+        Metrotek ETLN (Cyclone V SoC):
+        <ul>
+          <li>портирование кода; </li>
+          <li>подсистема шейпинга трафика;</li>
+          <li>реализация Metrotek Performance Test.</li>
+        </ul>
+        
+        <br>
+
+        <a href="http://metrotek.spb.ru/bmx.html">Беркут-MX</a> (Arria II GX):
+        <ul>
+          <li>предобработка TCP RTSP-потока для дальнейшего анализа;</li>
+          <li>система балансировки выходного трафика по хэшам.</li>
+        </ul>
+
+        <h3>2014</h3>
+        <a href="http://metrotek.spb.ru/b100.html">Metrotek B100</a> (Stratix V):
+        <ul>
+          <li>подсистема фильтрации трафика (1000 L2/L3/L4 правил на line rate);</li>
+          <li>подсистема коммутации трафика 100G <-> 10x10G; </li>
+          <li>подсистема балансировки трафика 100G -> 10X10G (по нагрузке и пр.);</li>
+          <li>подсистема добавления/удаления VLAN/MPLS меток на выходных интерфейсах.</li>
+        </ul>
+        
+        <br>
+
+        <a href="http://metrotek.spb.ru/bmx.html">Беркут-MX</a> (Arria II GX):
+        <ul>
+          <li>подсистема инкапсулирования Ethernet over UDP;</li>
+          <li>тест TWAMP (генератор, рефлектор и анализатор); </li>
+          <li>подсистема удаления VLAN/MPLS меток на выходных интерфейсах.</li>
+        </ul>
+        
+        <br> 
+
+        <a href="http://metrotek.spb.ru/b45.html">Беркут-ММТ. B5-E0</a> (Cyclone III):
+        <ul>
+          <li>реализация сонаправленного и противонаправленного интерфейса E0/ОЦК.</li>
+        </ul>
+
+        <h3>2013</h3>
+        <a href="http://metrotek.spb.ru/b100.html">Metrotek B100</a> (Stratix V):
+        <ul>
+          <li>подъем платы, проверка физических интерфейсов; </li>
+          <li>многопоточный 100G генератор трафика (line rate);</li>
+          <li>тест RFC2544 (на 100G);</li>
+          <li>тест BERT (на 100G);</li>
+          <li>RMON-статистика по 100G интерфейсу.</li>
+        </ul>
+        
+        <br>
+
+        <a href="http://metrotek.spb.ru/bmx.html">Беркут-MX</a> (Arria II GX):
+        <ul>
+          <li>подсистема фильтрации трафика (2000 L3/L4 правил на line rate); </li>
+          <li>предобработка UDP RTP-потока для дальнейшего анализа.</li>
+        </ul>
+        
+        <br>
+
+        <a href="http://metrotek.spb.ru/b3etx.html">Беркут-ET</a> (Cyclone III) и <a href="http://metrotek.spb.ru/b3etx.html">Беркут-ETX</a> (Cyclone IV):
+        <ul>
+          <li>тест Y.1564;</li>
+          <li>поддержка PTP;</li>
+          <li>оптимизация по ресурсам;</li>
+        </ul>
+         
+        <h3>2012</h3>
+        <a href="http://metrotek.spb.ru/b3etx.html">Беркут-ETX</a> (Cyclone IV):
+        <ul>
+          <li>подъем платы, проверка физических интерфейсов;</li>
+          <li>портирование кода с другого проекта;</li>
+          <li>1G MAC-контроллер (gmii);</li>
+          <li>тесты MAC- и IP-флуда;</li>
+        </ul>
+        <br>
+        <a href="http://www.exfo.com/products/field-network-testing/bu2-transport-datacom/ethernet-testing/ets-1000">ETS-1000</a> (Cyclone III):
+        <ul>
+          <li>поддержка и багфикс;</li>
+        </ul>
+
+        <h3>2011</h3>
+        <a href="http://metrotek.spb.ru/bmx.html">Беркут-MX</a> (Arria II GX): 
+        <ul>
+          <li>подсистема коммутации 2x10G <-> 2x1G; </li>
+          <li>подсистема фильтрации по строке (pattern match) (на скорости 10G);</li>
+          <li>доработка парсинга IP/UDP/TCP заголовков;</li>
+        </ul>
+      </div> <!-- content -->
+  </div> <!-- page -->
+
+  <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter34546245 = new Ya.Metrika({ id:34546245, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/34546245" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+
+  </body>
+
+</html>
